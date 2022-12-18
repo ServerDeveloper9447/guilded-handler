@@ -14,7 +14,7 @@ const client = new Client({ token: process.env.token });
 
 client.on("ready", () => console.log(`${client.user.raw.name} is Online`));
 
-require('guilded-handler')('./commands',client) //don't do './commands/'
+require('guilded-handler')(client,{path_to_dir:"./commands",prefix:"A!"}) //don't do './commands/'
 
 client.login();
 ```
@@ -24,8 +24,9 @@ client.login();
 ## Command file structure
 ```js
 module.exports = {
-    name: 'hello' //command name
-    run: (client,message,args) => {
+    name: 'hello' //command name (required)
+    aliases: ["hel"], //optional
+    run: (client,message,args) => { //(required)
         // run code
     }
 }
