@@ -3,7 +3,7 @@
 This package is inspired by discord command handlers.<br>
 Supports: `Guilded.js`
 
-![Guilded](https://img.guildedcdn.com/asset/App/Desktop_Screenshot.png)
+![Installed](https://img.shields.io/npm/dw/guilded-handler?label=Installs&style=for-the-badge)
 
 ---
 
