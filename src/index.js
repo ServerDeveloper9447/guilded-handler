@@ -29,7 +29,6 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
   console.log(chalk.blueBright("Loading Commands..."))
   var files = []
   const walker = walk.walk(pathogen, { followLinks: false });
-  var commands = []
   walker.on('file', function(root, stat, next) {
     // Add this file to the list of files
     files.push(root + '/' + stat.name);
@@ -38,6 +37,7 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
 
   walker.on('end', () => {
     var commandcount = 0
+    const commands = []
     const mapper = new Commands()
     files.forEach(path => {
       console.log(chalk.greenBright(`Walking into ${path}`))
@@ -55,10 +55,39 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
         mapper.set(mapper.size, command)
       } catch (err) {
         console.warn(chalk.redBright(`Failed to walk in: ${path}.`))
-        throw new guildedHandler(err)
+        throw new Error(err)
       }
     })
     client.commands = mapper
+   client.cmd = {load: () => {
+      const nwalker = walk.walk(pathogen, { followLinks: false })
+      var newfiles = []
+      nwalker.on('file', function(root, stat, next) {
+    // Add this file to the list of files
+    newfiles.push(root + '/' + stat.name);
+    next();
+  });
+      nwalker.on('end', () => {
+        const newmapper = new Commands()
+        newfiles.forEach(path => {
+      console.log(chalk.greenBright(`Walking into ${path}`))
+      try {
+        const command = require(path)
+        if (command.disabled === true) return console.log(`${chalk.green("Loaded command: " + command.name)} [${chalk.red("Disabled")}]\n----------------------------`);
+        if (!command.name || !command.run) return console.log(chalk.redBright(`Failed to walk in: ${path}`)), console.log(chalk.redBright("name or run parameter empty"));
+        console.log(chalk.green(`Loaded command ${command.name}\n----------------------------`))
+        if (typeof command.name != 'string') throw new guildedHandler("Command name param must be a  string");
+        if (typeof command.run != 'function') throw new guildedHandler("Command run param must be a function");
+        newmapper.set(newmapper.size, command)
+      } catch (err) {
+        console.warn(chalk.redBright(`Failed to walk in: ${path}.`))
+        throw new Error(err)
+      }
+    })
+        client.commands = newmapper
+        return true;
+      })
+    }}
     var prefarr = [""];
     if(typeof config.prefix == 'string' || typeof config.prefix == 'object') {
      prefarr = [].concat(config.prefix)
@@ -83,9 +112,10 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
       const commandname = messagearr[0]
       messagearr.shift()
       const commandnames = []
-      commands.map(x => x.name).forEach(x => {
-        x.forEach(m => commandnames.push(m.toLowerCase()))
+      client.commands.map(x => [].concat(x.name,x.aliases)).forEach(x => {
+        x.filter(l=>l!=null).forEach(m => commandnames.push(m.toLowerCase()))
       })
+          
       var cname = ''
       commandnames.some(w => {
         if (!cname) {
@@ -95,9 +125,17 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
           } else return false;
         }
       })
-      const command = commands.filter(x => x.name.includes(cname.toLowerCase()))[0]
+          function aliaseslow(aliases) {
+            const e = [];
+            [].concat(aliases).filter(x => x!=null).forEach(x => {
+              e.push(x.toLowerCase())
+            })
+            return e;
+          }
+      const command = client.commands.filter(x => [].concat(x.name.toLowerCase(),aliaseslow(x.aliases)).includes(cname.toLowerCase())).map(x => x)[0]
       if (!command) return;
           message.prefix = prefixforthis
+          message.command = cname
       command.run(client, message, messagearr)
         })()
       } else {
@@ -109,12 +147,12 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
           prefixforthis = el.toLowerCase()
         }
       })
-      const messagearr = message.content.slice(prefixforthis.length).split(" ")
+      const messagearr = message.content.slice(prefixforthis.length).split(" ").filter(x => x.trim() != "")
       const commandname = messagearr[0]
       messagearr.shift()
       const commandnames = []
-      commands.map(x => x.name).forEach(x => {
-        x.forEach(m => commandnames.push(m.toLowerCase()))
+      client.commands.map(x => [].concat(x.name,x.aliases)).forEach(x => {
+        x.filter(l => l!=null).forEach(m => commandnames.push(m.toLowerCase()))
       })
       var cname = ''
       commandnames.some(w => {
@@ -125,9 +163,17 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
           } else return false;
         }
       })
-      const command = commands.filter(x => x.name.includes(cname.toLowerCase()))[0]
+      function aliaseslow(aliases) {
+            const e = [];
+            [].concat(aliases).filter(x => x!=null).forEach(x => {
+              e.push(x.toLowerCase())
+            })
+            return e;
+          }
+      const command = client.commands.filter(x => [].concat(x.name.toLowerCase(),aliaseslow(x.aliases)).includes(cname.toLowerCase())).map(x => x)[0]
       if (!command) return;
         message.prefix = prefixforthis
+        message.command = cname
       command.run(client, message, messagearr)
       }
     })
@@ -142,5 +188,6 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
       console.log(chalk.blue("Status         : ") + chalk.red("Disconnected!"))
       throw new guildedHandler("Error on websocket")
     })
+    client.on('exit',() => console.log(`${chalk.blue("Status         :")} ${chalk.red("Disconnected")}`))
   })
 }
