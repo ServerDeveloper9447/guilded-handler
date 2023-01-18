@@ -72,6 +72,7 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
         newfiles.forEach(path => {
       console.log(chalk.greenBright(`Walking into ${path}`))
       try {
+        delete require.cache[require.resolve(path)]
         const command = require(path)
         if (command.disabled === true) return console.log(`${chalk.green("Loaded command: " + command.name)} [${chalk.red("Disabled")}]\n----------------------------`);
         if (!command.name || !command.run) return console.log(chalk.redBright(`Failed to walk in: ${path}`)), console.log(chalk.redBright("name or run parameter empty"));
@@ -183,6 +184,7 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
       console.log(chalk.blue(`Bot            : ${client.user.name}\nID             : ${client.user.id}\nBot ID         : ${client.user.botId}\nPrefix         : ${prefarr.join(", ").toLowerCase()}\nTotal Commands : ${commandcount}`))
       console.log(`${chalk.blue("Status         :")} ${chalk.green("Ready")}`)
       console.log(`Guilded-Handler Version: ${require(__dirname + '/package.json').version} || ${client.user.name} || Power Guilds Development Team || https://guilded.gg/powerguilds`)
+      console.log(chalk.red("You're using an experimental version of this package. Consider using a stable version if you're not an advanced user."))
     })
     client.on('error', () => {
       console.log(chalk.blue("Status         : ") + chalk.red("Disconnected!"))
