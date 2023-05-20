@@ -15,7 +15,7 @@ const walk = require('walk')
  * @param {String} path Path to the commands folder
  * @param {Object} client The guilded API client object
  */
-module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
+module.exports = (client, config = { path_to_dir: path, prefix:""},statuses={interval:10000,arr:[]}) => {
   if (!client) throw new guildedHandler("Must provide app where client = Guilded.js client object")
   if (!config.path_to_dir) throw new guildedHandler("Must provide path where path_to_dir = the path to the directory containing all command files (js).")
   const pathogen = require('path').resolve(config.path_to_dir)
@@ -183,8 +183,28 @@ module.exports = (client, config = { path_to_dir: path, prefix:""}) => {
       client.readyAt = new Date().toISOString()
       console.log(chalk.blue(`Bot            : ${client.user.name}\nID             : ${client.user.id}\nBot ID         : ${client.user.botId}\nPrefix         : ${prefarr.join(", ").toLowerCase()}\nTotal Commands : ${commandcount}`))
       console.log(`${chalk.blue("Status         :")} ${chalk.green("Ready")}`)
-      console.log(`Guilded-Handler Version: ${require(__dirname + '/package.json').version} || ${client.user.name} || Power Guilds Development Team || https://guilded.gg/powerguilds`)
-      console.log(chalk.red("You're using an experimental version of this package. Consider using a stable version if you're not an advanced user."))
+      console.log(`Guilded-Handler Version: ${require('../package.json').version} || ${client.user.name} || Power Guilds Development Team || https://guilded.gg/powerguilds`)
+      if(statuses.arr.length > 0) {
+        if(!statuses.interval || (isNaN(statuses.interval))) throw new guildedHandler("Interval isn't provided or isn't a number.");
+        if(Number(statuses.interval) < 10000) throw new guildedHandler("Interval mustn't be less than 10000 miliseconds (10s)");
+        for(let j = 0;j < statuses.arr.length;j++) {
+          if(!statuses.arr[j].content || !statuses.arr[j].emoteId) throw new guildedHandler("Status objects must have 'content' and 'emoteId' property");
+          break; //for safety
+        }
+        let i = 0;
+        setInterval(() => {
+          fetch("https://www.guilded.gg/api/v1/users/"+ client.user.id + "/status", {
+      method: 'PUT',
+      body: JSON.stringify(statuses.arr[i]),
+headers: {
+  'Content-Type':"application/json",
+  Authorization: `Bearer ${client.options.token}`
+}
+
+    }).catch(console.log)
+        if(i==statuses.arr.length) {i = 0} else i++;
+        })
+      }
     })
     client.on('error', () => {
       console.log(chalk.blue("Status         : ") + chalk.red("Disconnected!"))

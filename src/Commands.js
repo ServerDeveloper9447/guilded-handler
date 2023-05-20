@@ -36,13 +36,13 @@ class Commands extends Map {
     }
     /**
      * @method sortViaKeys
-     * @description sorts the group via key
+     * @description sorts the Commands via key
      * @similiar Array.sort() ( for string typed keys && any typed keys) and Array.sort((a,b) => a-b) (for number typed keys)
-     * @return Group
+     * @return Commands
      */
     sortViaKeys() {
       const entries = [...this.entries()];
-      return new Group(entries.sort((a, b) => {
+      return new Commands(entries.sort((a, b) => {
         if (a[0] < b[0])
           return 1;
         else if (a[0] > b[0])
@@ -53,22 +53,22 @@ class Commands extends Map {
     }
     /**
      * @method weakSort
-     * @description sorts the Group via Js Sort method //
+     * @description sorts the Commands via Js Sort method //
      * @similiar Array.sort()
-     * @return Group
+     * @return Commands
      */
     weakSort() {
-      return new Group([...this.entries()].sort());
+      return new Commands([...this.entries()].sort());
     }
     /**
      * @method filter
-     * @description filters the Group
+     * @description filters the Commands
      * @similiar Array.filter
-     * @param func Function for filtering the Group
-     * @return Group
+     * @param func Function for filtering the Commands
+     * @return Commands
      */
     filter(func) {
-      const g = new Group();
+      const g = new Commands();
       for (const [key, value] of this) {
         if (func(value, key, this))
           g.set(key, value);
@@ -77,7 +77,7 @@ class Commands extends Map {
     }
     /**
      * @method top
-     * @description returns the first value of Group
+     * @description returns the first value of Commands
      * @similiar Array[ 0 ] | Array.slice( 0,number )
      * @param number how many top values to be returned
      * @return V | V[]
@@ -88,19 +88,19 @@ class Commands extends Map {
     }
     /**
      * @method sort
-     * @description sorts the Group  using its Value
+     * @description sorts the Commands  using its Value
      * @similiar Array.sort()
      * @param compareFunction Function to sort
-     * @return Group
+     * @return Commands
      */
     sort(compareFunction) {
       const entries = [...this.entries()];
       const sorted = entries.sort((a, b) => compareFunction(a[1], b[1]));
-      return new Group(sorted);
+      return new Commands(sorted);
     }
     /**
      * @method object
-     * @description returns Group as an Object
+     * @description returns Commands as an Object
      * @similiar Object
      * @return Object
      */
@@ -113,7 +113,7 @@ class Commands extends Map {
     }
     /**
      * @method bottom
-     * @description returns the last Value of Group
+     * @description returns the last Value of Commands
      * @similiar Array[ Array.length - 1 ] | Array.slice(-number)
      * @param number number of values to be returned
      * @return V | V[]
@@ -124,7 +124,7 @@ class Commands extends Map {
     }
     /**
      * @method topKey
-     * @description returns the (first Key/Arrays of first n keys) of Group
+     * @description returns the (first Key/Arrays of first n keys) of Commands
      * @similiar Array[ 0 ] | Array.slice( 0,number )
      * @param number how many top keys to be returned
      * @return K | K[]
@@ -135,7 +135,7 @@ class Commands extends Map {
     }
     /**
      * @method bottomKey
-     * @description returns the last key of Group
+     * @description returns the last key of Commands
      * @similiar Array[ Array.length - 1 ] | Array.slice(-number)
      * @param number number of key to be returned
      * @return K | K[]
@@ -188,7 +188,7 @@ class Commands extends Map {
     }
     /**
      * @method getByPosition
-     * @description get Value by its position in Group
+     * @description get Value by its position in Commands
      * @similiar Array[ n - 1 ]
      * @param position position of Value tp be returned
      * @return V
@@ -198,13 +198,13 @@ class Commands extends Map {
     }
     /**
      * @method break
-     * @description divides and return Group into 2 different Groups according to the Function Provided
-     * @param func function according to which Group is to breaked into
-     * @return [ trueGroup,falseGroup]
+     * @description divides and return Commands into 2 different Commandss according to the Function Provided
+     * @param func function according to which Commands is to breaked into
+     * @return [ trueCommands,falseCommands]
      */
     break(func) {
-      const trueGrp = new Group();
-      const falseGrp = new Group();
+      const trueGrp = new Commands();
+      const falseGrp = new Commands();
       for (const [key, value] of this) {
         if (func(value, key, this))
           trueGrp.set(key, value);
@@ -215,23 +215,23 @@ class Commands extends Map {
     }
     /**
      * @method reverse
-     * @description returns the Group in reversed order
+     * @description returns the Commands in reversed order
      * @similiar Array.reverse()
-     * @return Group<K,V>
+     * @return Commands<K,V>
      */
     reverse() {
       const entries = [...this.entries()];
-      return new Group(entries.reverse());
+      return new Commands(entries.reverse());
     }
     /**
      * @method concat
-     * @description concats provided array of Groups
+     * @description concats provided array of Commandss
      * @similiar Array.concat
-     * @param grps Array of Group
-     * @return Group<any,any>
+     * @param grps Array of Commands
+     * @return Commands<any,any>
      */
     concat(...grps) {
-      const grp = new Group();
+      const grp = new Commands();
       const res = grps.map((x) => {
         for (const [key, value] of this) {
           grp.set(key, value);
@@ -241,7 +241,7 @@ class Commands extends Map {
     }
     /**
      * @method some
-     * @description whether Group fulfill the given condition
+     * @description whether Commands fulfill the given condition
      * @similiar Array.some()
      * @param func condition to check
      * @return boolean
@@ -251,7 +251,7 @@ class Commands extends Map {
     }
     /**
      * @method every
-     * @description whether Group fulfill the given condition
+     * @description whether Commands fulfill the given condition
      * @similiar Array.every()
      * @param func condition to check
      * @return boolean
@@ -261,7 +261,7 @@ class Commands extends Map {
     }
     /**
      * @method someKey
-     * @description whether Group fulfill the given condition
+     * @description whether Commands fulfill the given condition
      * @similiar Array.some()
      * @param func condition to check
      * @return boolean
@@ -271,7 +271,7 @@ class Commands extends Map {
     }
     /**
      * @method everyKey
-     * @description whether Group fulfill the given condition
+     * @description whether Commands fulfill the given condition
      * @similiar Array.every()
      * @param func condition to check
      * @return boolean
@@ -295,7 +295,7 @@ class Commands extends Map {
     }
     /**
      * @method toJSON
-     * @description returns Group as JSON
+     * @description returns Commands as JSON
      * @similiar JSON.stringify()
      * @param replacer same as JSON.stringify
      * @param space same as JSON.stringify
@@ -310,7 +310,7 @@ class Commands extends Map {
      * @similiar BinarySearch
      * @param value value to be searched
      * @param valueProp property to be searched in
-     * @param sort whether to sort the Group before Searching
+     * @param sort whether to sort the Commands before Searching
      * @return V | void
      */
     binarySearch(value, valueProp, sort = true) {
@@ -350,16 +350,16 @@ class Commands extends Map {
     }
     /**
      * @method clone
-     * @description clones a Group
-     * @param grp : Group to be cloned
-     * @return Group
+     * @description clones a Commands
+     * @param grp : Commands to be cloned
+     * @return Commands
      */
     clone(grp) {
-      return new Group(grp);
+      return new Commands(grp);
     }
     /**
      * @method removeRandom
-     * @description removes a random Data from Group
+     * @description removes a random Data from Commands
      * @return void
      */
     removeRandom() {
@@ -369,7 +369,7 @@ class Commands extends Map {
     }
     /**
      * @method map
-     * @description maps a function Over the Group
+     * @description maps a function Over the Commands
      * @similiar Array.map()
      * @param func Function to be mapped
      * @return U[]
@@ -383,14 +383,14 @@ class Commands extends Map {
     }
     /**
      * @method slice
-     * @description slice the Group and returns a copy of new Group
+     * @description slice the Commands and returns a copy of new Commands
      * @similiar Array.slice()
-     * @param from position of Data in Group to be sliced from. default is 1
-     * @param to position of Data  in Group to be sliced to.
-     * @return Group<K,V>
+     * @param from position of Data in Commands to be sliced from. default is 1
+     * @param to position of Data  in Commands to be sliced to.
+     * @return Commands<K,V>
      */
     slice(from = 1, to = 2) {
-      return new Group([...this.entries()].slice(from - 1, to - 1));
+      return new Commands([...this.entries()].slice(from - 1, to - 1));
     }
     /**
      * @method pop
@@ -418,7 +418,7 @@ class Commands extends Map {
     }
     /**
      * @method reduce
-     * @description reduces the data in Group returned by the function
+     * @description reduces the data in Commands returned by the function
      * @similiar Array.reduce()
      * @param func function to reduce the data
      * @param intVal intial data
@@ -437,7 +437,7 @@ class Commands extends Map {
     }
     /**
      * @method reduceRight
-     * @description reduces the data in Group returned by the function from right to left
+     * @description reduces the data in Commands returned by the function from right to left
      * @similiar Array.reduceRight()
      * @param func function to reduce the data
      * @param intVal intial data
@@ -459,7 +459,7 @@ class Commands extends Map {
     }
     /**
      * @method reduceArray
-     * @description reduces the values in Group returned by the function
+     * @description reduces the values in Commands returned by the function
      * @similiar Array.reduce()
      * @param func ompareFunction function to reduce the data
      * @param intVal intial data
@@ -473,7 +473,7 @@ class Commands extends Map {
     }
     /**
      * @method reduceRightArray
-     * @description reduces the values in Group returned by the function
+     * @description reduces the values in Commands returned by the function
      * @similiar Array.reduceRight()
      * @param func ompareFunction function to reduce the data
      * @param intVal intial data
@@ -487,9 +487,9 @@ class Commands extends Map {
     }
     /**
      * @method position
-     * @description returns position of the key in Group
+     * @description returns position of the key in Commands
      * @similiar Array.indexOf()
-     * @param key Key in the Group
+     * @param key Key in the Commands
      * @return number
      */
     position(key) {
@@ -497,7 +497,7 @@ class Commands extends Map {
     }
     /**
      * @method findPosition
-     * @description finds the position of the data in Group
+     * @description finds the position of the data in Commands
      * @similiar Array.findIndex()
      * @param func function to find position
      * @return number
@@ -517,7 +517,7 @@ class Commands extends Map {
     }
     /**
      * @method removeAlternate
-     * @description removes alternate data from Group
+     * @description removes alternate data from Commands
      * @param offset offset the removal of first data
      * @param alternate alternate gap
      * @return void
